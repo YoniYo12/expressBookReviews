@@ -31,58 +31,39 @@ public_users.post("/register", (req,res) => {
 
 // Get the book list available in the shop
 public_users.get('/',function (req, res) {
-    async function getBooks() {
-        try {
-            const response = await axios.get('http://localhost:5000');
-            return response.data;
-        } catch (error) {
-            console.error('Error fetching books:', error.response.data);
-            throw error;
-        }
-    }
+    res.send(JSON.stringify(books,null,4))
 });
 
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
-    async function getBookByISBN(isbn) {
-        try {
-            // Make GET request to fetch book details
-            const response = await axios.get(`http://localhost:5000/isbn/1`);
-    
-            // Return the book details from the response data
-            return response.data;
-        } catch (error) {
-            // Handle error if request fails
-            console.error(`Error fetching book with ISBN ${isbn}:`, error.response.data);
-            throw error;
-        }
-    }
+    const isbn = req.params.isbn;
+    res.send(books[isbn]);
  });
   
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
-    async function getBooksByAuthor(author) {
-        try {  
-            const response = await axios.get(`http://loaclhost:5000/author/${author}`);
-            return response.data;
-        } catch (error) {
-            console.error(`Error fetching books by author ${author}:`, error.response.data);
-            throw error;
-        }
+    const author = req.params.author;
+    const keys= Object.values(books);
+    const matchingBooks = keys.filter(book => book.author === author);
+
+    if(matchingBooks){
+        res.send(matchingBooks);
     }
+
 });
 
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
-    async function getBooksByTitle(title) {
-        try {
-            const response = await axios.get(`http://localhost:5000/title/${title}`);
-            return response.data;
-        } catch (error) {
-            console.error(`Error fetching books by title ${title}:`, error.response.data);
-            throw error;
-        }
-    }
+  const title = req.params.title
+  const keys = Object.values(books)
+
+  const matchingTitle = keys.filter(book => book.title === title)
+
+  if(matchingTitle){
+    res.send(matchingTitle);
+  }
+
+
 });
 
 //  Get book review
